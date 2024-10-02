@@ -1,28 +1,20 @@
 "use client";
+// components/TextToSpeech.js
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const TextToSpeech = () => {
   const [text, setText] = useState("");
-  const [voice, setVoice] = useState("en-US-Wavenet-D");
   const [audioSrc, setAudioSrc] = useState("");
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    const getAudio = async () => {
-      if (audioSrc) {
-        const audio = new Audio(audioSrc);
-        audio.play();
-      }
-    };
-    getAudio();
-  }, [audioSrc]);
+  
+  const voice = "en-US-Wavenet-C"; // Default to US English (Female)
 
   const handleSpeak = async () => {
     setLoading(true);
     try {
       const response = await axios.post(
-        "https://texttospeech.googleapis.com/v1/text:synthesize?key=YOUR_API_KEY",
+        `https://texttospeech.googleapis.com/v1/text:synthesize?key=YOUR_API_KEY`,
         {
           input: { text },
           voice: { languageCode: "en-US", name: voice },
@@ -39,15 +31,25 @@ const TextToSpeech = () => {
       const audioBlob = new Blob([
         new Uint8Array(atob(audioContent).split("").map((c) => c.charCodeAt(0))),
       ], { type: "audio/mp3" });
-      
+
       const audioUrl = URL.createObjectURL(audioBlob);
       setAudioSrc(audioUrl);
     } catch (error) {
-      console.error(error);
+      console.error("Error during TTS request:", error.response ? error.response.data : error.message);
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    const getAudio = async () => {
+      if (audioSrc) {
+        const audio = new Audio(audioSrc);
+        audio.play();
+      }
+    };
+    getAudio();
+  }, [audioSrc]);
 
   return (
     <div className="container">
@@ -58,11 +60,6 @@ const TextToSpeech = () => {
         onChange={(e) => setText(e.target.value)}
         placeholder="Enter text here"
       />
-      <select className="voice-select" value={voice} onChange={(e) => setVoice(e.target.value)}>
-        <option value="en-US-Wavenet-D">US English (Female)</option>
-        <option value="en-GB-Wavenet-D">UK English (Female)</option>
-        <option value="en-AU-Wavenet-D">Australian English (Male)</option>
-      </select>
       <button className="speak-button" onClick={handleSpeak} disabled={loading}>
         {loading ? "Loading..." : "Speak"}
       </button>
