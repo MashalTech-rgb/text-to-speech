@@ -8,15 +8,20 @@ const TextToSpeech = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  const voice = "en-US-Standard-C"; // Ensure this voice is available in your API
+  const voice = "en-US-Standard-C"; // Ensure this voice is available
   const apiKey = "YOUR_API_KEY"; // Replace with your actual API key
 
   const handleSpeak = async () => {
+    if (!text.trim()) {
+      setError("Please enter some text to speak.");
+      return;
+    }
+
     setLoading(true);
     setError(null); // Reset error state before making a request
     try {
       const response = await axios.post(
-        `https://texttospeech.googleapis.com/v1/text:synthesize?key=${apiKey}`, // Use the correct endpoint
+        `https://texttospeech.googleapis.com/v1/text:synthesize?key=${apiKey}`,
         {
           input: { text },
           voice: { languageCode: "en-US", name: voice },
@@ -47,6 +52,7 @@ const TextToSpeech = () => {
   useEffect(() => {
     const getAudio = async () => {
       if (audioSrc) {
+        console.log("Audio Source:", audioSrc); // Log audio source for debugging
         const audio = new Audio(audioSrc);
         audio.play().catch((error) => {
           console.error("Error playing audio:", error);
@@ -78,4 +84,5 @@ const TextToSpeech = () => {
 };
 
 export default TextToSpeech;
+
 
