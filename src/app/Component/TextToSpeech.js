@@ -9,7 +9,7 @@ const TextToSpeech = () => {
   const [error, setError] = useState(null);
 
   const voice = "en-US-Standard-C"; // Ensure this voice is available
-  const apiKey = "YOUR_API_KEY"; // Replace with your actual API key
+  const apiKey = "AIzaSyDHIxgcb8VBFi5BDqQNME0cWr2rQW0ofh8"; // Replace with your actual API key
 
   const handleSpeak = async () => {
     if (!text.trim()) {
@@ -21,16 +21,23 @@ const TextToSpeech = () => {
     setError(null); // Reset error state before making a request
     try {
       const response = await axios.post(
-        `https://texttospeech.googleapis.com/v1/text:synthesize?key=${apiKey}`,
+        `https://texttospeech.googleapis.com/v1beta1/text:synthesize?key=${apiKey}`,
         {
-          input: { text },
-          voice: { languageCode: "en-US", name: voice },
-          audioConfig: { audioEncoding: "MP3" },
-        },
-        {
-          headers: {
-            "Content-Type": "application/json",
+          "audioConfig": {
+            "audioEncoding": "Mp3",
+            "effectsProfileId": [
+              "small-bluetooth-speaker-class-device"
+            ],
+            "pitch": 0,
+            "speakingRate": 0
           },
+          "input": {
+            "text": text
+          },
+          "voice": {
+            "languageCode": "en-US",
+            "name": "en-US-Journey-F"
+          }
         }
       );
 
