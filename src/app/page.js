@@ -1,11 +1,13 @@
-import React from 'react'
-
-const page = () => {
+"use client"
+// pages/index.js
+import React from "react";
+import TextToSpeech from "./Component/TextToSpeech";
+const Home = () => {
   return (
     <div>
-      <h1>hello people</h1>
+      <TextToSpeech />
     </div>
-  )
-}
+  );
+};
 
-export default page
+export default Home;
